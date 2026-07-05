@@ -53,8 +53,10 @@ services:
             - NANGO_LOGS_ES_USER
             - NANGO_LOGS_ES_PWD
             - FLAG_SERVE_CONNECT_UI=${FLAG_SERVE_CONNECT_UI:-true}
-        volumes:
-            - './packages/providers/providers.yaml:/app/nango/packages/providers/providers.yaml'
+        # Uncomment to override the image's bundled providers.yaml with the one from this checkout
+        # (requires the platform's bind-mount source path to resolve to an actual file, not a directory).
+        # volumes:
+        #     - './packages/providers/providers.yaml:/app/nango/packages/providers/providers.yaml'
         restart: always
         ports:
             - '${SERVER_PORT:-3003}:${SERVER_PORT:-3003}'

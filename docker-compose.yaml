@@ -11,6 +11,13 @@ services:
             - '${NANGO_DB_PORT:-5432}:5432'
         volumes:
             - ./nango-data:/var/lib/postgresql/data
+        healthcheck:
+            test: ['CMD-SHELL', 'pg_isready -U nango -d nango']
+            interval: 5s
+            timeout: 5s
+            retries: 24
+            start_period: 10s
+        restart: unless-stopped
         networks:
             - nango
 
@@ -53,7 +60,8 @@ services:
             - '${SERVER_PORT:-3003}:${SERVER_PORT:-3003}'
             - '${CONNECT_UI_PORT:-3009}:${CONNECT_UI_PORT:-3009}'
         depends_on:
-            - nango-db
+            nango-db:
+                condition: service_healthy
             # - nango-elasticsearch
         networks:
             - nango
@@ -63,6 +71,7 @@ services:
         container_name: nango-redis
         ports:
             - '6379:6379'
+        restart: unless-stopped
         networks:
             - nango
     #

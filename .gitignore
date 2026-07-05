@@ -4,6 +4,8 @@ logs/*
 **/nango-data/*
 .idea/*
 .env
+.env.coolify
+docker-compose.override.yaml
 nango-integrations/*
 dist/
 build/

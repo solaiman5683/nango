@@ -8,7 +8,10 @@ services:
             POSTGRES_USER: nango
             POSTGRES_DB: nango
         ports:
-            - '${NANGO_DB_PORT:-5432}:5432'
+            # NANGO_DB_HOST_PORT is the *host-side* port mapping only. Do not reuse NANGO_DB_PORT here:
+            # nango-server reads NANGO_DB_PORT itself to pick which port to dial nango-db on over the
+            # internal Docker network (always 5432 inside the container, regardless of host mapping).
+            - '${NANGO_DB_HOST_PORT:-5432}:5432'
         volumes:
             - ./nango-data:/var/lib/postgresql/data
         healthcheck:
@@ -72,7 +75,8 @@ services:
         image: redis:7.2.4
         container_name: nango-redis
         ports:
-            - '${NANGO_REDIS_PORT:-6379}:6379'
+            # Same reasoning as NANGO_DB_HOST_PORT above: nango-server reads NANGO_REDIS_PORT itself.
+            - '${NANGO_REDIS_HOST_PORT:-6379}:6379'
         restart: unless-stopped
         networks:
             - nango
